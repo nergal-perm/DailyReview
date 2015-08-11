@@ -7,8 +7,8 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 
@@ -17,9 +17,17 @@ namespace DailyReviewCLI {
 		private const string TODO_DIR = @"c:\users\terekhov-ev\dropbox\todo\";
 		
 		public static void Main(string[] args) {
+			// TODO: Разобрать аргументы командной строки
+			// TODO: Установить контекст (прочитать / обновить свойства)
+			StringDictionary context = Utils.CliParser.parse(args);
+			// TODO: Выполнить нужную команду
 			Console.WriteLine("Hello World!");
 			
-			CreateMarkdownNote();
+			// Прототип идеи
+			//CreateMarkdownNote();
+			foreach (string key in context.Keys) {
+				Console.WriteLine("{0,-10}:\t{1}",key, context[key]);
+			}
 			
 			Console.Write("Press any key to continue . . . ");
 			Console.ReadKey(true);
