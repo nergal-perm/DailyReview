@@ -77,6 +77,7 @@ namespace DailyReviewCLI.Utils {
 				expected:"help",
 				actual:target["command"]);
 		}
-			
+
+				
 	}
 }

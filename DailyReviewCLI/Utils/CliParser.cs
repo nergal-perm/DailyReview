@@ -38,7 +38,7 @@ namespace DailyReviewCLI.Utils {
 		}
 
 		private static void createDefaults() {
-			context["date"] = "2015-08-11";
+			context["date"] = String.Format("{0:0000}-{1:00}-{2:00}", DateTime.Today.Year, DateTime.Today.Month, DateTime.Today.Day);
 			context["command"] = "help";
 		}
 		
