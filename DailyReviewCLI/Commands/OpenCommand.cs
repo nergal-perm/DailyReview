@@ -37,13 +37,13 @@ namespace DailyReviewCLI.Commands {
 				Console.WriteLine(task);
 			}			
 			
-			//CreateFilledNoteWith(tasks, _context["date"]);
-			// throw new NotImplementedException();
+			CreateFilledNoteWith(tasks, _context["date"]);
 		}
 		#endregion
 
-		public OpenCommand(StringDictionary context) {
+		public OpenCommand(StringDictionary context, FileSystemWrapper fsw) {
 			_context = context;
+			_fsw = fsw;
 		}
 		
 		private void CreateFilledNoteWith(string[] tasks, string curDate) {
@@ -60,15 +60,7 @@ namespace DailyReviewCLI.Commands {
 			lines.Add("");
 			lines.Add("");
 			
-			File.WriteAllLines(TODO_DIR + @"DayNotes\" + curDate + ".md", lines.ToArray());
+			_fsw.WriteToMarkdown(lines.ToArray(), _context["date"]);
 		}		
-		
-		public void setFSWrapper(FileSystemWrapper fsw) {
-			_fsw = fsw;
-		}
-
-		public bool dayExists() {
-			return true;
-		}
 	}
 }

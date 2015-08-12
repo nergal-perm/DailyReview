@@ -17,26 +17,23 @@ namespace DailyReviewCLI {
 
 		
 		public static void Main(string[] args) {
-			StringDictionary context = Utils.CliParser.parse(args);
-			// TODO: Выполнить нужную команду
-			Console.WriteLine("Hello World!");
-			
-			// Прототип идеи
-			//CreateMarkdownNote();
-			foreach (string key in context.Keys) {
-				Console.WriteLine("{0,-10}:\t{1}",key, context[key]);
-			}
-			
+			StringDictionary context = CliParser.parse(args);
 			FileSystemWrapper fsw = new FileSystemWrapper();
-			Console.WriteLine("File {0} exists? {1}", context["date"], fsw.dayExists(context["date"]));
-			OpenCommand command = new OpenCommand(context);
-			command.setFSWrapper(fsw);
-			command.run();
 			
+			IRunnable command = getNewCommand(context, fsw);
+			command.run();
 			
 			Console.Write("Press any key to continue . . . ");
 			Console.ReadKey(true);
 		}
 
+		static IRunnable getNewCommand(StringDictionary context, FileSystemWrapper fsw) {
+			switch (context["command"]) {
+				case "open":
+					return new OpenCommand(context, fsw);
+				default:
+					throw new NotImplementedException();
+			}
+		}
 	}
 }

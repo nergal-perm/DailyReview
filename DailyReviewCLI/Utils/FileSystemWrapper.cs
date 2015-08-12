@@ -19,7 +19,7 @@ namespace DailyReviewCLI.Utils {
 	/// </summary>
 	public class FileSystemWrapper {
 		private DirectoryInfo _dropboxTodo;
-		private DirectoryInfo _markdownFolder;
+		private readonly DirectoryInfo _markdownFolder;
 		
 		public FileSystemWrapper() {
 			// Проверить наличие папки Dropbox и DayNotes, создать при необходимости
@@ -64,6 +64,7 @@ namespace DailyReviewCLI.Utils {
 				}				
 				if (taskDate <= currentDate) activeTasks.Add(line);
 			}
+			activeTasks.Sort();
 			return activeTasks.ToArray();
 		}
 		
@@ -89,5 +90,11 @@ namespace DailyReviewCLI.Utils {
 
 			return new DirectoryInfo(folderPath);
 		}		
+
+		public void WriteToMarkdown(string[] tasks, string curDate) {
+			if (dayExists(curDate)) return;
+			File.WriteAllLines(_markdownFolder.FullName + @"\" + curDate + ".md", tasks);
+			Console.WriteLine("Successfully written {0}.md", curDate);
+		}
 	}
 }
