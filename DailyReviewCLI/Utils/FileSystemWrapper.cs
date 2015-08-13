@@ -163,12 +163,17 @@ namespace DailyReviewCLI.Utils {
 			var htmlLines = new List<string>();
 			bool isInList = false;
 			
-			foreach (string mdLine in mdLines) {
+			foreach (string iter in mdLines) {
+				string mdLine = iter;
 				if (isInList && !mdLine.StartsWith("* ", StringComparison.CurrentCulture)) {
 					isInList = false;
 					htmlLines.Add("</ul>");
 				}
 	
+//				if (mdLine.Contains("](")) {
+//					mdLine = replaceHyperLink(mdLine);
+//				}
+				
 				if (mdLine == "") {
 					htmlLines.Add(isInList ? "</ul>" : "<br/>");
 					isInList = false;
@@ -180,10 +185,6 @@ namespace DailyReviewCLI.Utils {
 						mdLine.Replace("## ", "")));
 					
 				} else if (mdLine.StartsWith("[", StringComparison.CurrentCulture)) {
-					if (!isInList) {
-						isInList = true;
-						htmlLines.Add("<ul>");
-					} 
 					htmlLines.Add(getColoredTaskString(mdLine));
 				} 
 				else if (mdLine.StartsWith("* ", StringComparison.CurrentCulture)) {
@@ -223,10 +224,18 @@ namespace DailyReviewCLI.Utils {
 					break;
 			}
 			
-			return String.Format("<li><div><font color=\"{0}\"><en-todo checked=\"{1}\"/>{2}</font></div></li>", 
-			                     colorHex, task[1].ToString() == "x" ? "true" : "false", task.Replace("* [x] ", "").Replace("* [ ] ",""));
+			return String.Format("<div><font color=\"{0}\"><en-todo checked=\"{1}\"/>{2}</font></div>", 
+			                     colorHex, task[1].ToString() == "x" ? "true" : "false", task.Replace("[x] ", "").Replace("[ ] ",""));
 		}
 
+		private string replaceHyperLink(string line) {
+			string[] linkParts = line.Split(new [] {"]("}, StringSplitOptions.RemoveEmptyEntries);
+			
+			return String.Format("<a href=\"{0}\" style=\"color: rgb(105, 170, 53);\">{1}</a>",
+			                     linkParts[1].Split(")"[0])[0],
+			                     linkParts[0].Split("["[0])[linkParts[0].Split("["[0]).Length-1]);
+		}
+		
 		private DateTime getDateFromString(string curDate) {
 		DateTime result;
 		
