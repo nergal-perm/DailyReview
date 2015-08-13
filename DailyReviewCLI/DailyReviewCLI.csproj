@@ -51,6 +51,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Commands\CloseCommand.cs" />
     <Compile Include="Commands\IRunnable.cs" />
     <Compile Include="Commands\OpenCommand.cs" />
     <Compile Include="Program.cs" />

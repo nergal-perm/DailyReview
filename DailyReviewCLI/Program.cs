@@ -14,7 +14,6 @@ using DailyReviewCLI.Utils;
 
 namespace DailyReviewCLI {
 	class Program {
-
 		
 		public static void Main(string[] args) {
 			StringDictionary context = CliParser.parse(args);
@@ -31,6 +30,8 @@ namespace DailyReviewCLI {
 			switch (context["command"]) {
 				case "open":
 					return new OpenCommand(context, fsw);
+				case "close":
+					return new CloseCommand(context, fsw);
 				default:
 					throw new NotImplementedException();
 			}

@@ -1,44 +1,43 @@
 ﻿/*
  * Created by SharpDevelop.
  * User: terekhov-ev
- * Date: 12.08.2015
- * Time: 11:25
+ * Date: 13.08.2015
+ * Time: 10:34
  * 
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Linq;
 using DailyReviewCLI.Utils;
 
 namespace DailyReviewCLI.Commands {
 	/// <summary>
-	/// Description of OpenCommand.
+	/// Description of CloseCommand.
 	/// </summary>
-	public class OpenCommand : IRunnable {
-		
+	public class CloseCommand : IRunnable {
 		private StringDictionary _context;
-		private FileSystemWrapper _fsw;
+		private FileSystemWrapper _fsw;		
 		
 		#region IRunnable implementation
 
 		public void run() {
 			// Пересоздавать файл нельзя
-			if (_fsw.dayExists(_context["date"])) {
-				Console.WriteLine("Файл уже существует");
+			if (!_fsw.dayExists(_context["date"])) {
+				Console.WriteLine("Файла не существует");
 				return;
 			}
 			
-			_fsw.WriteToMarkdown(_context["date"]);
-
+			_fsw.WriteToHtml(_context["date"]);
 		}
+
 		#endregion
 
-		public OpenCommand(StringDictionary context, FileSystemWrapper fsw) {
+		public CloseCommand(StringDictionary context, FileSystemWrapper fsw) {
 			_context = context;
 			_fsw = fsw;
 		}
-
+		
+		
+		
 	}
 }

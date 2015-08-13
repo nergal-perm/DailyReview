@@ -77,6 +77,9 @@ namespace DailyReviewCLI.Utils {
 				case "open":
 					context["command"] = "open";
 					break;
+				case "close":
+					context["command"] = "close";
+					break;
 				default:
 					context["command"] = "help";
 					break;
