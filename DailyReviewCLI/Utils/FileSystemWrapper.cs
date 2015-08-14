@@ -88,19 +88,22 @@ namespace DailyReviewCLI.Utils {
 				return;
 			
 			string[] tasks = getTasksForDate(curDate);
-			string[] lines = CreateFilledNoteWith(tasks, curDate);
+			string[] weather = getDateFromString(curDate) == DateTime.Today ? WebServices.getForecast() : WebServices.getHistoryFor(curDate);
+			string[] lines = CreateFilledNoteWith(tasks, weather, curDate);
 			
 			File.WriteAllLines(_markdownFolder.FullName + @"\" + curDate + ".md", lines);
 			Console.WriteLine("Successfully written {0}.md", curDate);
 		}
 		
-		private string[] CreateFilledNoteWith(string[] tasks, string curDate) {
+		private string[] CreateFilledNoteWith(string[] tasks, string[] weather, string curDate) {
 			var lines = new List<string>();
 			lines.Add("# План на день:");
 			foreach (var task in tasks) {
 				lines.Add("[ ] " + task.Trim());
 			}
-			lines.AddRange(new [] {"---", "# Под чертой:", "", "",
+			lines.AddRange(new [] {"---", "# Под чертой:", "", ""});
+			lines.AddRange(weather);
+			lines.AddRange(new [] {
 				"# Триста букв:", "", "",
 				"# События и результаты:", "", ""
 			});

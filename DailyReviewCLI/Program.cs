@@ -32,6 +32,8 @@ namespace DailyReviewCLI {
 					return new OpenCommand(context, fsw);
 				case "close":
 					return new CloseCommand(context, fsw);
+				case "help":
+					return new HelpCommand();
 				default:
 					throw new NotImplementedException();
 			}
