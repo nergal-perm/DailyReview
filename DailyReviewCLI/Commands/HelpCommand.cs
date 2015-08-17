@@ -7,7 +7,9 @@
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
-using DailyReviewCLI.Utils;
+using System.Drawing;
+using System.IO;
+using System.Reflection;
 
 namespace DailyReviewCLI.Commands
 {
@@ -23,11 +25,17 @@ namespace DailyReviewCLI.Commands
 		#region IRunnable implementation
 
 		public void run() {
-			string[] lines = WebServices.getForecast();
+			Assembly myAssembly = Assembly.GetExecutingAssembly();
+			Stream myStream = myAssembly.GetManifestResourceStream("Chronodex");
+			Image myImage = Image.FromStream(myStream);
+			myStream.Close();
+			Graphics go = Graphics.FromImage(myImage);
 			
-			foreach (var line in lines) {
-				Console.WriteLine(line);
-			}
+			go.FillEllipse(Brushes.Red, new Rectangle(0,0,100,100));
+			myImage.Save(@"D:\Temp\test.png");
+			
+			myImage.Dispose();
+			go.Dispose();
 		}
 
 		#endregion
