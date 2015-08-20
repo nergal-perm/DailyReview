@@ -8,6 +8,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -82,6 +83,11 @@ namespace DailyReviewCLI.Utils {
 			activeTasks.Sort();
 			return activeTasks.ToArray();
 		}
+
+		public string[] getTimeData(string date) {
+			return File.ReadAllLines(_markdownFolder.FullName + @"\" + date + ".md").Select(l => l.Trim()).Where(l => l.StartsWith("%", 	StringComparison.CurrentCulture)).ToArray();
+		}
+		
 		
 		public void WriteToMarkdown(string curDate) {
 			if (dayExists(curDate))
@@ -101,7 +107,7 @@ namespace DailyReviewCLI.Utils {
 			foreach (var task in tasks) {
 				lines.Add("[ ] " + task.Trim());
 			}
-			lines.AddRange(new [] {"---", "# Под чертой:", "", ""});
+			lines.AddRange(new [] { "---", "# Под чертой:", "", "" });
 			lines.AddRange(weather);
 			lines.AddRange(new [] {
 				"# Триста букв:", "", "",
@@ -127,12 +133,14 @@ namespace DailyReviewCLI.Utils {
 		private string[] getEnexNoteHeader(string curDate) {
 			List<string> lines = new List<string>();
 			
-			lines.AddRange(new [] {"<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
-			       "<!DOCTYPE en-export SYSTEM \"http://xml.evernote.com/pub/evernote-export2.dtd\">",
-			       "<en-export export-date=\"20150813T042235Z\" application=\"Evernote/Windows\" version=\"5.x\">",
-			       String.Format("<note><title>{0} - {1} - обзор дня</title><content>", curDate, getDayAbbr(curDate)),
-			       "<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">",
-			       "<en-note style=\"word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;\">"});
+			lines.AddRange(new [] {
+				"<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+				"<!DOCTYPE en-export SYSTEM \"http://xml.evernote.com/pub/evernote-export2.dtd\">",
+				"<en-export export-date=\"20150813T042235Z\" application=\"Evernote/Windows\" version=\"5.x\">",
+				String.Format("<note><title>{0} - {1} - обзор дня</title><content>", curDate, getDayAbbr(curDate)),
+				"<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\">",
+				"<en-note style=\"word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;\">"
+			});
 			
 			return lines.ToArray();
 			       
@@ -142,21 +150,21 @@ namespace DailyReviewCLI.Utils {
 			List<string> lines = new List<string>();
 			
 			lines.AddRange(new [] {String.Format("</en-note>]]></content><created>{0}</created>", getTimeStampFor(curDate)),
-			               	"<tag>план</tag><tag>день</tag><tag>обзор</tag><tag>триста_букв</tag>",
-			               	"<note-attributes><author>Евгений Терехов</author></note-attributes></note></en-export>"
-			               });
+				"<tag>план</tag><tag>день</tag><tag>обзор</tag><tag>триста_букв</tag>",
+				"<note-attributes><author>Евгений Терехов</author></note-attributes></note></en-export>"
+			});
 			
 			return lines.ToArray();
 		}
 		
 		private string getTimeStampFor(string curDate) {
-			return curDate.Replace("-","") + "T185959Z";
+			return curDate.Replace("-", "") + "T185959Z";
 		}
 		
 		private string getDayAbbr(string curDate) {
 			DateTime dt = getDateFromString(curDate);
 			
-			string[] dayNames = {"Вс","Пн","Вт","Ср","Чт","Пт","Сб"};
+			string[] dayNames = { "Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб" };
 			
 			return dayNames[(int)dt.DayOfWeek];
 		}
@@ -173,10 +181,6 @@ namespace DailyReviewCLI.Utils {
 					htmlLines.Add("</ul>");
 				}
 	
-//				if (mdLine.Contains("](")) {
-//					mdLine = replaceHyperLink(mdLine);
-//				}
-				
 				if (mdLine == "") {
 					htmlLines.Add(isInList ? "</ul>" : "<br/>");
 					isInList = false;
@@ -189,15 +193,13 @@ namespace DailyReviewCLI.Utils {
 					
 				} else if (mdLine.StartsWith("[", StringComparison.CurrentCulture)) {
 					htmlLines.Add(getColoredTaskString(mdLine));
-				} 
-				else if (mdLine.StartsWith("* ", StringComparison.CurrentCulture)) {
+				} else if (mdLine.StartsWith("* ", StringComparison.CurrentCulture)) {
 					if (!isInList) {
 						isInList = true;
 						htmlLines.Add("<ul>");
 					}
-					htmlLines.Add(String.Format("<li>{0}</li>", mdLine.Replace("* ","")));
-				}
-				else if (mdLine.StartsWith("---", StringComparison.CurrentCulture)) {
+					htmlLines.Add(String.Format("<li>{0}</li>", mdLine.Replace("* ", "")));
+				} else if (mdLine.StartsWith("---", StringComparison.CurrentCulture)) {
 					htmlLines.Add("<hr/>");
 				} else {
 					htmlLines.Add(String.Format("<div>{0}</div>", mdLine));
@@ -228,19 +230,19 @@ namespace DailyReviewCLI.Utils {
 			}
 			
 			return String.Format("<div><font color=\"{0}\"><en-todo checked=\"{1}\"/>{2}</font></div>", 
-			                     colorHex, task[1].ToString() == "x" ? "true" : "false", task.Replace("[x] ", "").Replace("[ ] ",""));
+				colorHex, task[1].ToString() == "x" ? "true" : "false", task.Replace("[x] ", "").Replace("[ ] ", ""));
 		}
 
 		private string replaceHyperLink(string line) {
-			string[] linkParts = line.Split(new [] {"]("}, StringSplitOptions.RemoveEmptyEntries);
+			string[] linkParts = line.Split(new [] { "](" }, StringSplitOptions.RemoveEmptyEntries);
 			
 			return String.Format("<a href=\"{0}\" style=\"color: rgb(105, 170, 53);\">{1}</a>",
-			                     linkParts[1].Split(")"[0])[0],
-			                     linkParts[0].Split("["[0])[linkParts[0].Split("["[0]).Length-1]);
+				linkParts[1].Split(")"[0])[0],
+				linkParts[0].Split("["[0])[linkParts[0].Split("["[0]).Length - 1]);
 		}
 		
 		private DateTime getDateFromString(string curDate) {
-		DateTime result;
+			DateTime result;
 		
 			if (!DateTime.TryParseExact(curDate, "yyyy-MM-dd",
 				    new CultureInfo("ru-RU"),
@@ -248,9 +250,12 @@ namespace DailyReviewCLI.Utils {
 				    out result)) {
 				throw new ArgumentException("Неверная дата {0}", curDate);
 			}		
-		return result;
-	}
+			return result;
+		}
 
+		public void SaveImage(Image chrImage, string curDate) {
+			chrImage.Save(_markdownFolder.FullName + @"\" + curDate + ".png");
+		}
 	}
 
 }

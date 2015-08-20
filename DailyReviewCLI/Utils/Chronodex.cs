@@ -25,13 +25,14 @@ namespace DailyReviewCLI.Utils {
 			new Rectangle(355, 249, 519, 520),
 			new Rectangle(298, 192, 634, 634)
 		};
+		private Dictionary<AreaType, Color> colors;
 		private Graphics go;
 		private Image myImage;
 			
 		public Chronodex() {
 			initializeAnglesDictionary();
+			initializeColorsDictionary();
 			initializeGraphicsObject();
-
 		}
 
 		void initializeGraphicsObject() {
@@ -44,22 +45,29 @@ namespace DailyReviewCLI.Utils {
 		
 		
 		
-		public void DrawChronodexSector(string startTime, int duration, FocusLevel lvl) {
-
-			
+		private void DrawChronodexSector(TimeData timeData) {
 			GraphicsPath gp = new GraphicsPath();
-			gp.AddArc(levels[(int)lvl], angles[startTime], duration * 7.5f);
-			gp.AddArc(levels[0], angles[startTime], duration * 7.5f);
+			
+			gp.AddArc(levels[(int)timeData.Focus], angles[timeData.StartTime], timeData.Duration * 7.5f);
+			gp.AddArc(levels[0], angles[timeData.StartTime], timeData.Duration * 7.5f);
 			gp.AddLine(gp.PathPoints[0], gp.PathPoints[4]);
 			gp.AddLine(gp.PathPoints[3], gp.PathPoints[7]);
 			
-			HatchBrush brush = new HatchBrush(HatchStyle.DarkDownwardDiagonal, Color.BlueViolet, Color.Transparent);
+			HatchBrush brush = new HatchBrush(HatchStyle.DarkDownwardDiagonal, colors[timeData.Area], Color.Transparent);
 			go.FillPath(brush, gp);
 			gp.Dispose();			
-
-
 		}
 
+		public Image CreateChronodex(string[] timeData) {
+			foreach (var line in timeData) {
+				TimeData td = CreateTimeDataFromString(line);
+				DrawChronodexSector(td);
+			}
+
+			return myImage;
+		}
+		
+		
 		void initializeAnglesDictionary() {
 			angles = new Dictionary<string, float>();
 			
@@ -161,11 +169,50 @@ namespace DailyReviewCLI.Utils {
 			angles.Add("2345", 262.5f);
 		}
 
+		void initializeColorsDictionary() {
+			colors = new Dictionary<AreaType, Color>();
+			colors.Add(AreaType.Work, Color.Blue);
+			colors.Add(AreaType.Leisure, Color.LimeGreen);
+			colors.Add(AreaType.Community, Color.Violet);
+			colors.Add(AreaType.Health, Color.Coral);
+			colors.Add(AreaType.Improvement, Color.Black);
+			colors.Add(AreaType.Relationships, Color.MistyRose);
+			colors.Add(AreaType.Unproductive, Color.Red);
+		}
+
+		TimeData CreateTimeDataFromString(string line) {
+			var details = line.Split("%-".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+			return new TimeData {
+				StartTime = details[0].Trim(),
+				Duration = Int32.Parse(details[1]),
+				Focus = (FocusLevel)Int32.Parse(details[2]),
+				Area = GetAreaFrom(details[3]),
+				Description = details.Length >4 ? details[4] : ""
+			};
+		}
+
+		AreaType GetAreaFrom(string str) {
+			switch (str.ToUpper()) {
+				case "Р":
+					return AreaType.Work;
+				case "Д":
+					return AreaType.Leisure;
+				case "О":
+					return AreaType.Relationships;
+				case "У":
+					return AreaType.Improvement;
+				case "С":
+					return AreaType.Community;
+				case "З":
+					return AreaType.Health;
+				default:
+					return AreaType.Unproductive;
+			}
+		}
+		
 		#region IDisposable implementation
 
 		public void Dispose() {
-			myImage.Save(@"D:\Temp\test.png");
-			
 			myImage.Dispose();
 			go.Dispose();	
 		}
@@ -173,6 +220,23 @@ namespace DailyReviewCLI.Utils {
 		#endregion
 	}
 	
+	public struct TimeData {
+		public string StartTime;
+		public int Duration;
+		public FocusLevel Focus;
+		public string Description;
+		public AreaType Area;
+	}
+
+	public enum AreaType {
+		Work = 0,
+		Leisure = 1,
+		Health = 2,
+		Improvement = 3,
+		Relationships = 4,
+		Community = 5,
+		Unproductive = 6
+	}
 	
 	public enum FocusLevel {
 		Low = 1,

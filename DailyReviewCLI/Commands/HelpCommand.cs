@@ -18,10 +18,14 @@ namespace DailyReviewCLI.Commands {
 		#region IRunnable implementation
 
 		public void run() {
-			Chronodex chr = new Chronodex();
-			chr.DrawChronodexSector("1215", 3, FocusLevel.Normal);
-			chr.DrawChronodexSector("1630", 6, FocusLevel.High);
-			chr.Dispose();
+			Chronodex _chr = new Chronodex();
+			string[] td = {
+				"% 0815-1-3-у-план дня",
+				"% 0830-1-1-р-консультация Redmine",
+				"% 0845-2-2-д-JavaScript в Mnemosyne"
+			};
+			_chr.CreateChronodex(td);
+			_chr.Dispose();
 		}
 		#endregion
 		
