@@ -173,10 +173,10 @@ namespace DailyReviewCLI.Utils {
 			colors = new Dictionary<AreaType, Color>();
 			colors.Add(AreaType.Work, Color.Blue);
 			colors.Add(AreaType.Leisure, Color.LimeGreen);
-			colors.Add(AreaType.Community, Color.Violet);
-			colors.Add(AreaType.Health, Color.Coral);
+			colors.Add(AreaType.Community, Color.Orange);
+			colors.Add(AreaType.Health, Color.DarkViolet);
 			colors.Add(AreaType.Improvement, Color.Black);
-			colors.Add(AreaType.Relationships, Color.MistyRose);
+			colors.Add(AreaType.Relationships, Color.Fuchsia);
 			colors.Add(AreaType.Unproductive, Color.Red);
 		}
 
