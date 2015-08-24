@@ -18,14 +18,25 @@ namespace DailyReviewCLI.Commands {
 		#region IRunnable implementation
 
 		public void run() {
-			Chronodex _chr = new Chronodex();
 			string[] td = {
-				"% 0815-1-3-у-план дня",
-				"% 0830-1-1-р-консультация Redmine",
-				"% 0845-2-2-д-JavaScript в Mnemosyne"
+				"% 0800-1-3-н-всякая фигня за компом",
+				"% 0815-1-1-у-итоги выходных",
+				"% 0830-1-2-р-реализация выбора отчета в redmine:excel",
+				"% 0845-1-1-о-тестовая многострочная деятельность",
+				"% 0900-3-2-у-план дня / недели, итоги",
+				"% 0945-4-3-д-связные списки Chronodex",
+				"% 1045-2-3-н-кофе и фейсбук",
+				"% 1115-1-1-д-связные списки Chronodex",
+				"% 1130-1-3-н",
+				"% 1145-1-2-д-связные списки Chronodex",
+				"% 1200-3-1-н-обед",
+				"% 1245-5-3-д-выноски Chronodex"
 			};
-			_chr.CreateChronodex(td);
-			_chr.Dispose();
+
+			ChronodexList cl = new ChronodexList(td);
+			FileSystemWrapper fs = new FileSystemWrapper();
+			fs.SaveImage(Chronodex.CreateChronodex(cl), "test");
+			
 		}
 		#endregion
 		

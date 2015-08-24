@@ -58,9 +58,14 @@
     <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="Commands\IRunnable.cs" />
     <Compile Include="Commands\OpenCommand.cs" />
+    <Compile Include="EndToEnd.cs">
+      <DependentUpon>Program.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\Chronodex.cs" />
+    <Compile Include="Utils\ChronodexList.cs" />
+    <Compile Include="Utils\ChronodexSector.cs" />
     <Compile Include="Utils\CliParser.cs" />
     <Compile Include="Utils\CliParserTest.cs">
       <DependentUpon>CliParser.cs</DependentUpon>
@@ -69,6 +74,7 @@
       <DependentUpon>FileSystemWrapper.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\FileSystemWrapper.cs" />
+    <Compile Include="Utils\ListEx.cs" />
     <Compile Include="Utils\WebServices.cs" />
   </ItemGroup>
   <ItemGroup>
