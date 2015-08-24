@@ -19,7 +19,7 @@ namespace DailyReviewCLI.Utils {
 	/// </summary>
 	public static class Chronodex {
 		# region Static Dictionaryies and fields
-		static Dictionary<string, float> angles = new Dictionary<string, float>() {
+		public static Dictionary<string, float> angles = new Dictionary<string, float>() {
 			{"0000", 270.0f},
 			{"0015", 277.5f},
 			{"0030", 285.0f},
@@ -118,14 +118,14 @@ namespace DailyReviewCLI.Utils {
 			{"2345", 262.5f}			
 		};
 		
-		static Rectangle[] levels = {
+		public static Rectangle[] levels = {
 			new Rectangle(471, 365, 288, 288),
 			new Rectangle(415, 309, 400, 400),
 			new Rectangle(355, 249, 519, 520),
 			new Rectangle(298, 192, 634, 634)
 		};
 		
-		static Dictionary<AreaType, Color> colors = new Dictionary<AreaType, Color>() {
+		public static Dictionary<AreaType, Color> colors = new Dictionary<AreaType, Color>() {
 			{AreaType.Work, Color.Blue},
 			{AreaType.Leisure, Color.LimeGreen},
 			{AreaType.Community, Color.Orange},
@@ -149,6 +149,16 @@ namespace DailyReviewCLI.Utils {
 			HatchBrush brush = new HatchBrush(HatchStyle.DarkDownwardDiagonal, colors[cs.Area], Color.Transparent);
 			go.FillPath(brush, gp);
 			gp.Dispose();			
+			
+			if (cs.Description != string.Empty) {
+				Font stringFont = new Font("Monoid", 12);
+				SolidBrush textBrush = new SolidBrush(colors[cs.Area]);
+				go.DrawString(cs.Description, stringFont, textBrush, cs.LabelRectangle);
+
+				Pen pen = new Pen(colors[cs.Area], 4.0f);
+				go.DrawLine(pen, cs.CentralPoint, cs.CalloutEnd);
+				go.DrawLine(pen, cs.CalloutEnd, new PointF(cs.LabelRectangle.X, cs.CalloutEnd.Y));
+			}
 		}
 
 		public static Image CreateChronodex(ChronodexList cl) {
@@ -158,8 +168,12 @@ namespace DailyReviewCLI.Utils {
 			Image myImage = Image.FromStream(myStream);
 			myStream.Close();
 			Graphics go = Graphics.FromImage(myImage);			
+		
+			LayoutChronodex(cl, go);
 			
-			ChronodexSector cs = cl.getFirst();
+			// draw sectors
+			ChronodexSector cs;
+			cs = cl.getFirst();
 			DrawChronodexSector(cs, go);
 			
 			while (cl.getNext() != cs) {
@@ -168,6 +182,21 @@ namespace DailyReviewCLI.Utils {
 			}
 			
 			return myImage;
+		}
+		
+		static void LayoutChronodex(ChronodexList cl, Graphics go) {
+			// find closest to Zero grad angle
+			var cs = cl.findLayoutStartingSector();
+			do {
+				if (cl.Descriptions.ContainsKey(cl.getCurrent().Description)) {
+					cl.getCurrent().LabelRectangle = cl.Descriptions[cl.getCurrent().Description].LabelRectangle;
+					cl.getCurrent().CalloutEnd = cl.Descriptions[cl.getCurrent().Description].CalloutEnd;
+				} else {
+					cl.getCurrent().LayoutRespecting(go, cl.getPrevious().LabelRectangle);
+					cl.Descriptions.Add(cl.getCurrent().Description, cl.getCurrent());
+				}
+				cl.moveForward();
+			} while (cl.getCurrent() != cs);
 		}
 
 	}

@@ -26,7 +26,7 @@ namespace DailyReviewCLI {
 			};
 			
 			dayData_complex = new[] {
-				"% 1000-1-3-н-кофе",
+				"% 1530-1-3-н-кофе",
 				"% 0815-1-1-у-итоги выходных",
 				"% 0830-2-2-р-реализация выбора отчета в redmine:excel",
 				"% 0900-3-2-у-план дня / недели, итоги",
@@ -54,6 +54,13 @@ namespace DailyReviewCLI {
 			cl = new ChronodexList(dayData_complex);
 			Assert.AreEqual(expected: "0815",
 				actual: cl.getFirst().StartTime);			
+		}
+		
+		[Test]
+		public void shouldFindLayoutStartSector() {
+			ChronodexList cl = new ChronodexList(dayData_complex);
+			Assert.AreEqual(expected: "1530",
+				actual: cl.findLayoutStartingSector().StartTime);
 		}
 	}
 }

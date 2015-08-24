@@ -74,6 +74,7 @@
       <DependentUpon>FileSystemWrapper.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\FileSystemWrapper.cs" />
+    <Compile Include="Utils\ListEx.cs" />
     <Compile Include="Utils\WebServices.cs" />
   </ItemGroup>
   <ItemGroup>

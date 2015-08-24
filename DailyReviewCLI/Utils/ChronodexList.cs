@@ -8,6 +8,8 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
 
 namespace DailyReviewCLI.Utils {
 	/// <summary>
@@ -17,6 +19,7 @@ namespace DailyReviewCLI.Utils {
 		string[] _dayData;
 		readonly LinkedList<ChronodexSector> _sectors;
 		LinkedListNode<ChronodexSector> _currentNode;
+		Dictionary<string, ChronodexSector> _descriptions;
 		
 		public ChronodexList(string[] dayData) {
 			_sectors = new LinkedList<ChronodexSector>();
@@ -27,6 +30,11 @@ namespace DailyReviewCLI.Utils {
 				_sectors.AddLast(new ChronodexSector(timeData));
 			}
 			_currentNode = _sectors.First;
+			_descriptions = new Dictionary<string, ChronodexSector>();
+		}
+		
+		public Dictionary<string, ChronodexSector> Descriptions {
+			get { return _descriptions; }
 		}
 		
 		public int getSectorsCount() {
@@ -38,17 +46,28 @@ namespace DailyReviewCLI.Utils {
 		}
 
 		public ChronodexSector getNext() {
-			if (_currentNode.Next == null)
-				return _sectors.First.Value;
-			return _currentNode.Next.Value;
+			return _currentNode.Next == null ? _sectors.First.Value : _currentNode.Next.Value;
 		}
-		
+
+		public ChronodexSector getPrevious() {
+			return _currentNode.Previous == null ? _sectors.Last.Value : _currentNode.Previous.Value;
+		}
 		public void moveForward() {
-			_currentNode = _currentNode.Next;
+			_currentNode = _currentNode.Next ?? _sectors.First;
 		}
 		
 		public ChronodexSector getCurrent() {
 			return _currentNode.Value;
 		}
+
+		public ChronodexSector findLayoutStartingSector() {
+//			_currentNode = (ChronodexSector)_sectors.Nodes().FirstOrDefault(n => n.Value.MiddleAngle == _sectors.Nodes().Min(m => m.Value.MiddleAngle));
+//			return _currentNode.Value;
+			_currentNode = _sectors.First;
+			return _sectors.First.Value;
+			
+		}
+		
+
 	}
 }
