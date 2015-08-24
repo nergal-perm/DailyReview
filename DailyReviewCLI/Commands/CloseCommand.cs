@@ -18,7 +18,6 @@ namespace DailyReviewCLI.Commands {
 	public class CloseCommand : IRunnable {
 		private StringDictionary _context;
 		private FileSystemWrapper _fsw;
-		private Chronodex _chr;
 		
 		#region IRunnable implementation
 
@@ -30,7 +29,7 @@ namespace DailyReviewCLI.Commands {
 			}
 			
 			_fsw.WriteToHtml(_context["date"]);
-			Image chrImage = _chr.CreateChronodex(_fsw.getTimeData(_context["date"]));
+			Image chrImage = Chronodex.CreateChronodex(new ChronodexList(_fsw.getTimeData(_context["date"])));
 			_fsw.SaveImage(chrImage, _context["date"]);
 		}
 
@@ -39,7 +38,6 @@ namespace DailyReviewCLI.Commands {
 		public CloseCommand(StringDictionary context, FileSystemWrapper fsw) {
 			_context = context;
 			_fsw = fsw;
-			_chr = new Chronodex();
 		}
 		
 		
