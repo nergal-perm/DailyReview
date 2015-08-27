@@ -3,7 +3,7 @@
  * User: terekhov-ev
  * Date: 13.08.2015
  * Time: 10:34
- * 
+ *
  * To change this template use Tools | Options | Coding | Edit Standard Headers.
  */
 using System;
@@ -18,7 +18,7 @@ namespace DailyReviewCLI.Commands {
 	public class CloseCommand : IRunnable {
 		private StringDictionary _context;
 		private FileSystemWrapper _fsw;
-		
+
 		#region IRunnable implementation
 
 		public void run() {
@@ -27,11 +27,13 @@ namespace DailyReviewCLI.Commands {
 				Console.WriteLine("Файла не существует");
 				return;
 			}
-			
-			_fsw.WriteToHtml(_context["date"]);
+
 			Image chrImage = Chronodex.CreateChronodex(new ChronodexList(_fsw.getTimeData(_context["date"])));
 			_fsw.SaveImage(chrImage, _context["date"]);
-		}
+			_fsw.WriteToHtml(_context["date"]);
+
+            _fsw.cleanUpFiles(_context["date"]);
+        }
 
 		#endregion
 
@@ -39,8 +41,8 @@ namespace DailyReviewCLI.Commands {
 			_context = context;
 			_fsw = fsw;
 		}
-		
-		
-		
+
+
+
 	}
 }

@@ -157,7 +157,8 @@ namespace DailyReviewCLI.Utils {
 
 				Pen pen = new Pen(colors[cs.Area], 4.0f);
 				go.DrawLine(pen, cs.CentralPoint, cs.CalloutEnd);
-				go.DrawLine(pen, cs.CalloutEnd, new PointF(cs.LabelRectangle.X, cs.CalloutEnd.Y));
+				go.DrawLine(pen, new PointF(cs.LabelRectangle.Left, cs.LabelRectangle.Bottom), 
+				            new PointF(cs.LabelRectangle.Right, cs.LabelRectangle.Bottom));
 			}
 		}
 
