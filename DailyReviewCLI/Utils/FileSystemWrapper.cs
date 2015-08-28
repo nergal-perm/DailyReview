@@ -27,7 +27,6 @@ namespace DailyReviewCLI.Utils {
 
 		public FileSystemWrapper() {
 			// Проверить наличие папки Dropbox и DayNotes, создать при необходимости
-
 			if (getDropboxFolder() == null) {
 				_dropboxTodo = new DirectoryInfo(getCurrentFolderPath());
 				_markdownFolder = new DirectoryInfo(getCurrentFolderPath() + @"\DayNotes\");
@@ -39,7 +38,6 @@ namespace DailyReviewCLI.Utils {
 			if (!_dropboxTodo.Exists) {
 				_dropboxTodo.Create();
 			}
-
 		}
 
 		#region Files, folders and paths
@@ -110,11 +108,12 @@ namespace DailyReviewCLI.Utils {
 			foreach (var task in tasks) {
 				lines.Add("[ ] " + task.Trim());
 			}
-			lines.AddRange(new [] { "---", "# Под чертой:", "", "" });
+			lines.AddRange(new [] { "---", "", "" });
 			lines.AddRange(weather);
 			lines.AddRange(new [] {
 				"# Триста букв:", "", "",
-				"# События и результаты:", "", ""
+				"# События и результаты:", "", "",
+				"# Хронодекс:", ""
 			});
 
 			return lines.ToArray();
@@ -287,9 +286,9 @@ namespace DailyReviewCLI.Utils {
 			ProcessStartInfo psi = new ProcessStartInfo(enscript,  @" importNotes /s " + file + @" /n Timeline");
 			psi.UseShellExecute = false;
 			Process p = Process.Start(psi);
-			
+
 			p.WaitForExit();
-			
+
 			File.Delete(_markdownFolder.FullName + @"\" + curDate + ".png");
 			File.Delete(_markdownFolder.FullName + @"\" + curDate + ".enex");
 			File.Move(_markdownFolder.FullName + @"\" + curDate + ".md", _markdownFolder.FullName + @"\" + curDate + ".closed" );
