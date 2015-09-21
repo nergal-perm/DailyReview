@@ -29,7 +29,11 @@ namespace DailyReviewCLI.Commands {
 			}
 
 			Image chrImage = Chronodex.CreateChronodex(new ChronodexList(_fsw.getTimeData(_context["date"])));
-			_fsw.SaveImage(chrImage, _context["date"]);
+			
+			if (chrImage != null) {
+				_fsw.SaveImage(chrImage, _context["date"]);	
+			}
+			
 			_fsw.WriteToHtml(_context["date"]);
 
             _fsw.cleanUpFiles(_context["date"]);

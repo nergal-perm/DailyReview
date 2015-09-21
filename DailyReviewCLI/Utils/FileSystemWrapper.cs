@@ -127,8 +127,13 @@ namespace DailyReviewCLI.Utils {
 
 			enexNote.AddRange(getEnexNoteHeader(curDate));
 			enexNote.AddRange(htmlLines);
-            enexNote.Add("<en-media hash=\"" + getImageMediaHash(curDate) + "\" style=\"cursor: default; height: auto;\" type=\"image/png\"/>");
-            enexNote.AddRange(getEnexNoteFooter(curDate));
+            
+			// Добавляем картинку с Хронодексом
+			if (File.Exists(_markdownFolder.FullName + @"\" + curDate + ".png")) { 
+				enexNote.Add("<en-media hash=\"" + getImageMediaHash(curDate) + "\" style=\"cursor: default; height: auto;\" type=\"image/png\"/>");
+			}
+
+			enexNote.AddRange(getEnexNoteFooter(curDate));
 
 			File.WriteAllLines(_markdownFolder.FullName + @"\" + curDate + ".enex", enexNote.ToArray());
 		}
@@ -154,11 +159,17 @@ namespace DailyReviewCLI.Utils {
 
 			lines.AddRange(new [] {String.Format("</en-note>]]></content><created>{0}</created>", getTimeStampFor(curDate)),
 				"<tag>план</tag><tag>день</tag><tag>обзор</tag><tag>триста_букв</tag>",
-				"<note-attributes><author>Евгений Терехов</author></note-attributes>",
-				"<resource><data encoding=\"base64\">",
-				getImageFileResource(curDate), "</data><mime>image/png</mime><width>1200</width><height>1000</height></resource>",
-				"</note></en-export>"
+				"<note-attributes><author>Евгений Терехов</author></note-attributes>"
 			});
+			
+			if (File.Exists(_markdownFolder.FullName + @"\" + curDate + ".png")) {
+				lines.AddRange(new [] {
+					"<resource><data encoding=\"base64\">",
+					getImageFileResource(curDate), "</data><mime>image/png</mime><width>1200</width><height>1000</height></resource>"
+				});
+			}
+			
+			lines.Add("</note></en-export>");
 
 			return lines.ToArray();
 		}

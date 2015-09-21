@@ -164,6 +164,8 @@ namespace DailyReviewCLI.Utils {
 
 		public static Image CreateChronodex(ChronodexList cl) {
 			
+			if (cl.getSectorsCount() == 0) {return null;}
+			
 			Assembly myAssembly = Assembly.GetExecutingAssembly();
 			Stream myStream = myAssembly.GetManifestResourceStream("Chronodex");
 			Image myImage = Image.FromStream(myStream);
