@@ -85,7 +85,19 @@ namespace DailyReviewCLI.Utils {
 			return activeTasks.ToArray();
 		}
 
-		public string[] getTimeData(string date) {
+	    public string GetFirstOpenDay() {        
+			DateTime minDate = DateTime.MaxValue;
+			foreach (var mdFile in _markdownFolder.GetFiles("*.md")) {
+				var fileDate = getDateFromString(mdFile.Name.Replace(mdFile.Extension, "").Trim(".".ToCharArray()));
+				//Debug only
+				//Console.Write("file date: {0:0000}-{1:00}-{2:00}, ", fileDate.Year, fileDate.Month, fileDate.Day);
+				//Console.WriteLine("min date: {0:0000}-{1:00}-{2:00}", minDate.Year, minDate.Month, minDate.Day);
+				minDate = fileDate < minDate ? fileDate : minDate;
+			}
+			return String.Format("{0:0000}-{1:00}-{2:00}", minDate.Year, minDate.Month, minDate.Day);
+	    }
+
+        public string[] getTimeData(string date) {
 			return File.ReadAllLines(_markdownFolder.FullName + @"\" + date + ".md").Select(l => l.Trim()).Where(l => l.StartsWith("%", 	StringComparison.CurrentCulture)).ToArray();
 		}
 
@@ -102,7 +114,7 @@ namespace DailyReviewCLI.Utils {
 			Console.WriteLine("Successfully written {0}.md", curDate);
 		}
 
-		private string[] CreateFilledNoteWith(string[] tasks, string[] weather, string curDate) {
+	  private string[] CreateFilledNoteWith(string[] tasks, string[] weather, string curDate) {
 			var lines = new List<string>();
 			lines.Add("# План на день:");
 			foreach (var task in tasks) {
@@ -207,7 +219,7 @@ namespace DailyReviewCLI.Utils {
 			bool isInList = false;
 
 			foreach (string iter in mdLines) {
-				string mdLine = iter;
+				string mdLine = iter.Replace("<", "&lt;").Replace(">", "&gt;");;
 				if (isInList && !mdLine.StartsWith("* ", StringComparison.CurrentCulture)) {
 					isInList = false;
 					htmlLines.Add("</ul>");
@@ -282,7 +294,7 @@ namespace DailyReviewCLI.Utils {
 				    new CultureInfo("ru-RU"),
 				    DateTimeStyles.None,
 				    out result)) {
-				throw new ArgumentException("Неверная дата {0}", curDate);
+				throw new ArgumentException(String.Format("Неверная дата {0}", curDate));
 			}
 			return result;
 		}

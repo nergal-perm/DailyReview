@@ -22,6 +22,10 @@ namespace DailyReviewCLI.Commands {
 		#region IRunnable implementation
 
 		public void run() {
+			if (_context["date"] == null) {
+				_context["date"] = _fsw.GetFirstOpenDay();
+			}
+			
 			// Пересоздавать файл нельзя
 			if (!_fsw.dayExists(_context["date"])) {
 				Console.WriteLine("Файла не существует");
