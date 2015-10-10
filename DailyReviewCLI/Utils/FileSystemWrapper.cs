@@ -304,7 +304,13 @@ namespace DailyReviewCLI.Utils {
 		}
 
 		public void cleanUpFiles(string curDate) {
-			string enscript = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\App Paths\ENScript.exe", "", "").ToString();
+			string enscript;
+			try {
+				enscript = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\App Paths\ENScript.exe", "", "").ToString();
+			} catch (Exception e) {
+				enscript = Registry.GetValue(@"HKEY_CURRENT_MACHINE\Software\Microsoft\Windows\CurrentVersion\App Paths\ENScript.exe", "", "").ToString();
+			}
+			
 			string file = _markdownFolder.FullName + curDate + ".enex";
 			ProcessStartInfo psi = new ProcessStartInfo(enscript,  @" importNotes /s " + file + @" /n Timeline");
 			psi.UseShellExecute = false;
