@@ -50,6 +50,9 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="mscorlib" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework">
       <HintPath>..\packages\NUnit.2.6.4\lib\nunit.framework.dll</HintPath>
     </Reference>
@@ -88,6 +91,9 @@
     <Compile Include="Utils\FileSystemWrapper.cs" />
     <Compile Include="Utils\ListEx.cs" />
     <Compile Include="Utils\WebServices.cs" />
+    <Compile Include="Utils\WebServiceTest.cs">
+      <DependentUpon>WebServices.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

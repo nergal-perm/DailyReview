@@ -26,7 +26,8 @@ namespace DailyReviewCLI.Utils {
 		private readonly DirectoryInfo _markdownFolder;
 		private int[] plan = { 0, 0, 0, 0 };
 		private int[] fact = { 0, 0, 0, 0 };
-		private Dictionary<char, int> priorities = new Dictionary<char, int>();		
+		private Dictionary<char, int> priorities = new Dictionary<char, int>();	
+		private string productivityData = "";
 
 		public FileSystemWrapper() {
 			// Проверить наличие папки Dropbox и DayNotes, создать при необходимости
@@ -128,7 +129,7 @@ namespace DailyReviewCLI.Utils {
 			foreach (var task in tasks) {
 				lines.Add("[ ] " + task.Trim());
 			}
-			lines.AddRange(new [] { "---", "", "## Исполнение плана: {plan}", "", "" });
+			lines.AddRange(new [] { "---", "", "## Исполнение плана: {plan}", "## Индекс продуктивности: {productivity}", "" });
 			lines.AddRange(weather);
 			lines.AddRange(new [] {
 				"# Триста букв:", "", "",
@@ -140,6 +141,7 @@ namespace DailyReviewCLI.Utils {
 		}
 
 		public void WriteToHtml(string curDate) {
+			productivityData = ""; // WebServices.getProductivityData(curDate);
 			string[] mdLines = File.ReadAllLines(_markdownFolder.FullName + @"\" + curDate + ".md");
 			string[] htmlLines = ConvertMd2Html(mdLines);
 
@@ -241,7 +243,9 @@ namespace DailyReviewCLI.Utils {
 						mdLine.Replace("# ", "")));
 				} else if (mdLine.StartsWith("## ", StringComparison.CurrentCulture)) {
 					htmlLines.Add(String.Format("<div><b>{0}</b></div>",
-					                            mdLine.Replace("## ", "").Replace("{plan}", string.Format("{0,3:P2}", getPlanPercentage()))));
+					                            mdLine.Replace("## ", "")
+					                            .Replace("{plan}", string.Format("{0,3:P2}", getPlanPercentage()))
+					                            .Replace("{productivity}", productivityData)));
 
 				} else if (mdLine.StartsWith("[", StringComparison.CurrentCulture)) {
 					htmlLines.Add(getColoredTaskString(mdLine));

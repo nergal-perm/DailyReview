@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Configuration;
 using System.Xml;
+using Newtonsoft.Json.Linq;
 
 namespace DailyReviewCLI.Utils {
 
@@ -46,6 +47,39 @@ namespace DailyReviewCLI.Utils {
 			return result.ToArray();
 		}
 
+		public static string getProductivityData(string curDate) {
+			var sb = new StringBuilder();
+			sb.Append("https://www.rescuetime.com/anapi/daily_summary_feed?key=");
+			sb.Append(ConfigurationManager.AppSettings.Get("RescueTimeAPI"));
+			
+			using (var webClient = new System.Net.WebClient()) {
+				webClient.Encoding = Encoding.UTF8;
+				string[] result = webClient.DownloadString(sb.ToString()).Split(',');
+				bool isCurrentDate = false;
+				StringBuilder resBuilder = new StringBuilder();
+				foreach (var line in result) {
+					isCurrentDate |= line.Contains(curDate);
+					isCurrentDate &= !line.Contains("}");
+					
+					if (isCurrentDate) {
+						if (line.Contains("\"productivity_pulse\"")) {
+							resBuilder.Append(line.Replace("\"productivity_pulse\":", "Индекс продуктивности: ")).Append(", ");
+						}
+						if (line.Contains("\"all_productive_duration_formatted\"")) {
+							resBuilder.Append(line.Replace("\"all_productive_duration_formatted\":", "продуктивное время: ").Replace("\"", "")).Append(", ");
+						}
+						if (line.Contains("\"all_distracting_duration_formatted\"")) {
+							resBuilder.Append(line.Replace("\"all_distracting_duration_formatted\":", "непродуктивное время: ").Replace("\"", "")).Append(".");
+						}
+							
+					}
+				}
+				return resBuilder.ToString();
+			}
+			
+		}
+		
+		
 		public static string[] getHistoryFor(string curDate) {
 			return new string[0] ;
 		}
