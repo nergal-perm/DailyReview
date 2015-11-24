@@ -141,7 +141,7 @@ namespace DailyReviewCLI.Utils {
 		}
 
 		public void WriteToHtml(string curDate) {
-			productivityData = ""; // WebServices.getProductivityData(curDate);
+			productivityData = WebServices.getProductivityData(curDate);
 			string[] mdLines = File.ReadAllLines(_markdownFolder.FullName + @"\" + curDate + ".md");
 			string[] htmlLines = ConvertMd2Html(mdLines);
 
