@@ -24,6 +24,9 @@ namespace DailyReviewCLI.Utils {
 	public class FileSystemWrapper {
 		private DirectoryInfo _dropboxTodo;
 		private readonly DirectoryInfo _markdownFolder;
+		private int[] plan = { 0, 0, 0, 0 };
+		private int[] fact = { 0, 0, 0, 0 };
+		private Dictionary<char, int> priorities = new Dictionary<char, int>();		
 
 		public FileSystemWrapper() {
 			// Проверить наличие папки Dropbox и DayNotes, создать при необходимости
@@ -38,6 +41,11 @@ namespace DailyReviewCLI.Utils {
 			if (!_dropboxTodo.Exists) {
 				_dropboxTodo.Create();
 			}
+			
+			priorities.Add('A', 0);
+			priorities.Add('B', 1);
+			priorities.Add('C', 2);
+			priorities.Add('D', 3);			
 		}
 
 		#region Files, folders and paths
@@ -120,7 +128,7 @@ namespace DailyReviewCLI.Utils {
 			foreach (var task in tasks) {
 				lines.Add("[ ] " + task.Trim());
 			}
-			lines.AddRange(new [] { "---", "", "" });
+			lines.AddRange(new [] { "---", "", "## Исполнение плана: {plan}", "", "" });
 			lines.AddRange(weather);
 			lines.AddRange(new [] {
 				"# Триста букв:", "", "",
@@ -233,10 +241,11 @@ namespace DailyReviewCLI.Utils {
 						mdLine.Replace("# ", "")));
 				} else if (mdLine.StartsWith("## ", StringComparison.CurrentCulture)) {
 					htmlLines.Add(String.Format("<div><b>{0}</b></div>",
-						mdLine.Replace("## ", "")));
+					                            mdLine.Replace("## ", "").Replace("{plan}", string.Format("{0,3:P2}", getPlanPercentage()))));
 
 				} else if (mdLine.StartsWith("[", StringComparison.CurrentCulture)) {
 					htmlLines.Add(getColoredTaskString(mdLine));
+					updatePlanPercentage(mdLine);
 				} else if (mdLine.StartsWith("* ", StringComparison.CurrentCulture)) {
 					if (!isInList) {
 						isInList = true;
@@ -255,6 +264,36 @@ namespace DailyReviewCLI.Utils {
 			return htmlLines.ToArray();
 		}
 
+		private double getPlanPercentage() {
+			double result = 0;
+			if (plan[0]>0) {
+				result += (0.7 * fact[0] / plan[0]);
+			}
+			if (plan[1]>0) {
+				result += (0.2 * fact[1] / plan[1]);
+			}
+			if (plan[2]>0) {
+				result += (0.07 * fact[2] / plan[2]);
+			}
+			if (plan[3]>0) {
+				result += (0.03 * fact[3] / plan[3]);
+			}
+			return result;
+		}
+		
+		private void updatePlanPercentage(string task) {
+
+			if (!priorities.ContainsKey(task[5])) {
+				plan[3]++;
+				if (task[1].ToString() == "x")
+					fact[3]++;
+			} else {
+				plan[priorities[task[5]]]++;
+				if (task[1].ToString() == "x")
+					fact[priorities[task[5]]]++;
+			}
+		}
+		
 		private string getColoredTaskString(string task) {
 			string colorHex;
 			switch (task[5].ToString()) {
