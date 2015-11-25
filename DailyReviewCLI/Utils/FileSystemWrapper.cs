@@ -129,7 +129,7 @@ namespace DailyReviewCLI.Utils {
 			foreach (var task in tasks) {
 				lines.Add("[ ] " + task.Trim());
 			}
-			lines.AddRange(new [] { "---", "", "## Исполнение плана: {plan}", "## Индекс продуктивности: {productivity}", "" });
+			lines.AddRange(new [] { "---", "", "## Исполнение плана: {plan}", "## {productivity}", "" });
 			lines.AddRange(weather);
 			lines.AddRange(new [] {
 				"# Триста букв:", "", "",
