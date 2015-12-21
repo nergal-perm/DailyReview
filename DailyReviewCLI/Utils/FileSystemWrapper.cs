@@ -270,16 +270,20 @@ namespace DailyReviewCLI.Utils {
 
 		private double getPlanPercentage() {
 			double result = 0;
-			if (plan[0]>0) {
+			if (plan[0] > 0) {
 				result += (0.7 * fact[0] / plan[0]);
 			}
-			if (plan[1]>0) {
+			if (plan[1] > 0) {
 				result += (0.2 * fact[1] / plan[1]);
 			}
-			if (plan[2]>0) {
-				result += (0.07 * fact[2] / plan[2]);
+			if (plan[2] > 0) {
+				if (plan[3] > 0) {
+					result += (0.07 * fact[2] / plan[2]);
+				} else {
+					result += (0.1 * fact[2] / plan[2]);
+				}
 			}
-			if (plan[3]>0) {
+			if (plan[3] > 0) {
 				result += (0.03 * fact[3] / plan[3]);
 			}
 			return result;
@@ -363,7 +367,7 @@ namespace DailyReviewCLI.Utils {
 
 			File.Delete(_markdownFolder.FullName + @"\" + curDate + ".png");
 			File.Delete(_markdownFolder.FullName + @"\" + curDate + ".enex");
-			File.Move(_markdownFolder.FullName + @"\" + curDate + ".md", _markdownFolder.FullName + @"\" + curDate + ".closed" );
+			//File.Move(_markdownFolder.FullName + @"\" + curDate + ".md", _markdownFolder.FullName + @"\" + curDate + ".closed" );
 		}
 	}
 
