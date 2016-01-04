@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Text;
 using System.Configuration;
 using System.Xml;
-using Newtonsoft.Json.Linq;
 
 namespace DailyReviewCLI.Utils {
 
