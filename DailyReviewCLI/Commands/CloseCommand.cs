@@ -39,8 +39,9 @@ namespace DailyReviewCLI.Commands {
 			}
 			
 			_fsw.WriteToHtml(_context["date"]);
-
+			_fsw.moveFilesForZim(_context["date"]);
             _fsw.cleanUpFiles(_context["date"]);
+            
         }
 
 		#endregion

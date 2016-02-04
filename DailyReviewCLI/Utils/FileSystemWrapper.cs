@@ -158,8 +158,9 @@ namespace DailyReviewCLI.Utils {
 			enexNote.AddRange(getEnexNoteFooter(curDate));
 
 			File.WriteAllLines(_markdownFolder.FullName + @"\" + curDate + ".enex", enexNote.ToArray());
+			
 		}
-
+		
 		private string[] getEnexNoteHeader(string curDate) {
 			List<string> lines = new List<string>();
 
@@ -246,7 +247,6 @@ namespace DailyReviewCLI.Utils {
 					                            mdLine.Replace("## ", "")
 					                            .Replace("{plan}", string.Format("{0,3:P2}", getPlanPercentage()))
 					                            .Replace("{productivity}", productivityData)));
-
 				} else if (mdLine.StartsWith("[", StringComparison.CurrentCulture)) {
 					htmlLines.Add(getColoredTaskString(mdLine));
 					updatePlanPercentage(mdLine);
@@ -365,9 +365,27 @@ namespace DailyReviewCLI.Utils {
 
 			p.WaitForExit();
 
-			File.Delete(_markdownFolder.FullName + @"\" + curDate + ".png");
 			File.Delete(_markdownFolder.FullName + @"\" + curDate + ".enex");
-			//File.Move(_markdownFolder.FullName + @"\" + curDate + ".md", _markdownFolder.FullName + @"\" + curDate + ".closed" );
+		}
+		
+		public void moveFilesForZim(string curDate) {
+			string text = File.ReadAllText(_markdownFolder.FullName + @"\" + curDate + ".md");
+			text = text.Replace("{plan}", string.Format("{0,3:P2}", getPlanPercentage()))
+				.Replace("{productivity}", productivityData) 
+				.Replace("[x]", "[*]")
+				.Replace("[ ]", "[x]")
+				.Replace("## ", "**")
+				.Replace("#", "======");
+			
+			
+			
+			File.WriteAllText(_markdownFolder.FullName + @"\" + curDate + ".md", text);
+			File.AppendAllText(_markdownFolder.FullName + @"\" + curDate + ".md", Environment.NewLine + @"{{../" + curDate + ".png}}");
+			File.Move(_markdownFolder.FullName + @"\" + curDate + ".png", _markdownFolder.FullName + @"\" + curDate.Substring(0,4) + @"\" +
+			          curDate.Substring(5,2) + @"\" + curDate + ".png");
+			File.Move(_markdownFolder.FullName + @"\" + curDate + ".md", _markdownFolder.FullName + @"\" + curDate.Substring(0,4) + @"\" +
+			          curDate.Substring(5,2) + @"\" + curDate.Substring(8,2) + ".txt");
+			
 		}
 	}
 
