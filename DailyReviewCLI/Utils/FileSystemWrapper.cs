@@ -381,8 +381,10 @@ namespace DailyReviewCLI.Utils {
 			
 			File.WriteAllText(_markdownFolder.FullName + @"\" + curDate + ".md", text);
 			File.AppendAllText(_markdownFolder.FullName + @"\" + curDate + ".md", Environment.NewLine + @"{{../" + curDate + ".png}}");
-			File.Move(_markdownFolder.FullName + @"\" + curDate + ".png", _markdownFolder.FullName + @"\" + curDate.Substring(0,4) + @"\" +
-			          curDate.Substring(5,2) + @"\" + curDate + ".png");
+			if (File.Exists(_markdownFolder.FullName + @"\" + curDate + ".png")) {
+				File.Move(_markdownFolder.FullName + @"\" + curDate + ".png", _markdownFolder.FullName + @"\" + curDate.Substring(0, 4) + @"\" +
+					curDate.Substring(5, 2) + @"\" + curDate + ".png");
+			}
 			File.Move(_markdownFolder.FullName + @"\" + curDate + ".md", _markdownFolder.FullName + @"\" + curDate.Substring(0,4) + @"\" +
 			          curDate.Substring(5,2) + @"\" + curDate.Substring(8,2) + ".txt");
 			
