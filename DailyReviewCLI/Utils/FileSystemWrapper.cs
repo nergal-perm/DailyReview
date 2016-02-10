@@ -8,6 +8,7 @@
  */
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
@@ -66,7 +67,7 @@ namespace DailyReviewCLI.Utils {
 				appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
 				dbPath = Path.Combine(appDataPath, "Dropbox\\host.db");
 				if (!File.Exists(dbPath))
-					return null;
+					return new DirectoryInfo(ConfigurationManager.AppSettings.Get("DropboxFolder"));
 			}
 
 			var lines = File.ReadAllLines(dbPath);
