@@ -360,7 +360,7 @@ namespace DailyReviewCLI.Utils {
 			}
 			
 			string file = _markdownFolder.FullName + curDate + ".enex";
-			ProcessStartInfo psi = new ProcessStartInfo(enscript,  @" importNotes /s " + file + @" /n Timeline");
+			ProcessStartInfo psi = new ProcessStartInfo(enscript,  @" importNotes /s " + file + @" /n " + ConfigurationManager.AppSettings.Get("EvernoteNotebook"));
 			psi.UseShellExecute = false;
 			Process p = Process.Start(psi);
 

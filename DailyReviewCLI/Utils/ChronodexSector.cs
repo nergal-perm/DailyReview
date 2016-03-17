@@ -9,6 +9,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Linq;
 
 namespace DailyReviewCLI.Utils {
 	/// <summary>
@@ -37,7 +38,7 @@ namespace DailyReviewCLI.Utils {
 			_duration = Int32.Parse(timeData[1]);
 			_focus = (FocusLevel)Int32.Parse(timeData[2]);
 			_area = GetAreaFrom(timeData[3]);
-			_description = timeData.Length > 4 ? timeData[4] : "";
+			_description = timeData.Length > 4 ? String.Join("-", timeData.Skip(4)) : "";
 			_layedOut = false;
 			
 			// derivative fields
