@@ -32,6 +32,11 @@ namespace DailyReviewCLI.Utils {
 		
 		bool _layedOut;
 		
+		HatchStyle[] _styles = {
+			HatchStyle.DarkDownwardDiagonal,
+			HatchStyle.Shingle
+		};
+		
 		public ChronodexSector(string[] timeData) {
 			// basic fields
 			_startTime = timeData[0].Trim();
@@ -40,6 +45,7 @@ namespace DailyReviewCLI.Utils {
 			_area = GetAreaFrom(timeData[3]);
 			_description = timeData.Length > 4 ? String.Join("-", timeData.Skip(4)) : "";
 			_layedOut = false;
+			_hatchType = _styles[0];
 			
 			// derivative fields
 			_angleBegin = Chronodex.angles[_startTime];
@@ -52,11 +58,18 @@ namespace DailyReviewCLI.Utils {
 			_color = Chronodex.colors[_area];
 		}
 
-		public void LayoutRespecting(Graphics go, RectangleF labelRectangle) {
+		public void LayoutRespecting(Graphics go, ChronodexSector prev) {
 			Font stringFont = new Font("Monoid", 12);
 			SizeF stringSize = new SizeF();
+			RectangleF labelRectangle = prev.LabelRectangle;
 			int maxWidth = (int)Math.Min(_calloutEnd.X, (1200-_calloutEnd.X));
 			int i = 0;
+			
+			if (prev.Area == _area) {
+				for (i=0; i < _styles.Length; i++) {
+					if (_styles[i] == prev.HatchType) _hatchType = _styles[(i+1) % _styles.Length];
+				}
+			}
 			
 			do {
 				stringSize = go.MeasureString(_description, stringFont, maxWidth);

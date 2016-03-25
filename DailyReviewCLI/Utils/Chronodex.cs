@@ -146,7 +146,7 @@ namespace DailyReviewCLI.Utils {
 			gp.AddLine(gp.PathPoints[0], gp.PathPoints[4]);
 			gp.AddLine(gp.PathPoints[3], gp.PathPoints[7]);
 			
-			HatchBrush brush = new HatchBrush(HatchStyle.DarkDownwardDiagonal, colors[cs.Area], Color.Transparent);
+			HatchBrush brush = new HatchBrush(cs.HatchType, colors[cs.Area], Color.Transparent);
 			go.FillPath(brush, gp);
 			gp.Dispose();			
 			
@@ -195,7 +195,7 @@ namespace DailyReviewCLI.Utils {
 					cl.getCurrent().LabelRectangle = cl.Descriptions[cl.getCurrent().Description].LabelRectangle;
 					cl.getCurrent().CalloutEnd = cl.Descriptions[cl.getCurrent().Description].CalloutEnd;
 				} else {
-					cl.getCurrent().LayoutRespecting(go, cl.getPrevious().LabelRectangle);
+					cl.getCurrent().LayoutRespecting(go, cl.getPrevious());
 					cl.Descriptions.Add(cl.getCurrent().Description, cl.getCurrent());
 				}
 				cl.moveForward();
