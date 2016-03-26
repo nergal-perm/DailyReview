@@ -60,6 +60,7 @@ namespace DailyReviewCLI.Utils {
 		}
 
 		DirectoryInfo getDropboxFolder() {
+			return new DirectoryInfo(ConfigurationManager.AppSettings.Get("DropboxFolder"));
 			var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 			var dbPath = Path.Combine(appDataPath, "Dropbox\\host.db");
 
@@ -356,7 +357,11 @@ namespace DailyReviewCLI.Utils {
 			try {
 				enscript = Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\App Paths\ENScript.exe", "", "").ToString();
 			} catch (Exception e) {
-				enscript = Registry.GetValue(@"HKEY_CURRENT_MACHINE\Software\Microsoft\Windows\CurrentVersion\App Paths\ENScript.exe", "", "").ToString();
+				try {
+					enscript = Registry.GetValue(@"HKEY_CURRENT_MACHINE\Software\Microsoft\Windows\CurrentVersion\App Paths\ENScript.exe", "", "").ToString();
+				} catch (Exception ex) {
+					enscript = Registry.GetValue(@"HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\App Paths\ENScript.exe", "", "").ToString();
+				}
 			}
 			
 			string file = _markdownFolder.FullName + curDate + ".enex";

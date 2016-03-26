@@ -33,8 +33,13 @@ namespace DailyReviewCLI.Utils {
 		bool _layedOut;
 		
 		HatchStyle[] _styles = {
+			HatchStyle.Percent50,
+			HatchStyle.Plaid,
+			HatchStyle.SmallCheckerBoard,
+			HatchStyle.SmallGrid,
 			HatchStyle.DarkDownwardDiagonal,
-			HatchStyle.Shingle
+			HatchStyle.DarkHorizontal,
+			HatchStyle.DarkUpwardDiagonal
 		};
 		
 		public ChronodexSector(string[] timeData) {
@@ -67,7 +72,10 @@ namespace DailyReviewCLI.Utils {
 			
 			if (prev.Area == _area) {
 				for (i=0; i < _styles.Length; i++) {
-					if (_styles[i] == prev.HatchType) _hatchType = _styles[(i+1) % _styles.Length];
+					if (_styles[i] == prev.HatchType) {
+						_hatchType = _styles[(i+1) % _styles.Length];
+						break;
+					}
 				}
 			}
 			
