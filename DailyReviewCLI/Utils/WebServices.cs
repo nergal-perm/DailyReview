@@ -38,12 +38,21 @@ namespace DailyReviewCLI.Utils {
 				foreach (XmlNode xNode in xArray) {
 					if (int.Parse(xNode.SelectSingleNode("period").InnerText) <= 1) {
 						string line = String.Format("{0}: {1}", xNode.SelectSingleNode("title").InnerText, xNode.SelectSingleNode("fcttext_metric").InnerText); 
+						result.Add("{" +xNode.SelectSingleNode("icon_url").InnerText + "}");
 						result.Add(line);
 					}
 				}
 				result.Add("");
 			}
 			return result.ToArray();
+		}
+		
+		public static byte[] getResourceByUrl(string sUrl) {
+			byte[] result;
+			using (var webClient = new System.Net.WebClient()) {
+				result = webClient.DownloadData(sUrl);
+			}
+			return result;
 		}
 
 		public static string getProductivityData(string curDate) {

@@ -29,6 +29,7 @@ namespace DailyReviewCLI.Utils {
 		private int[] fact = { 0, 0, 0, 0 };
 		private Dictionary<char, int> priorities = new Dictionary<char, int>();	
 		private string productivityData = "";
+		private List<string> imageResources = new List<string>();
 
 		public FileSystemWrapper() {
 			// Проверить наличие папки Dropbox и DayNotes, создать при необходимости
@@ -127,14 +128,34 @@ namespace DailyReviewCLI.Utils {
 
 	  private string[] CreateFilledNoteWith(string[] tasks, string[] weather, string curDate) {
 			var lines = new List<string>();
-			lines.Add("# План на день:");
-			foreach (var task in tasks) {
-				lines.Add("[ ] " + task.Trim());
-			}
+			lines.AddRange(new [] {"# Триста букв:", "", "" });
+			lines.AddRange(new [] {
+				"# Питание:",
+				"* З - ",
+				"* О - ",
+				"* У - ",
+				"* П - ",
+				""
+			});
+			lines.AddRange(new [] {
+				"# План на день:",
+				"[ ] (A)",
+				"[ ] (B)",
+				"[ ] (B)",
+				"[ ] (B)",
+				"[ ] (C)",
+				"[ ] (C)",
+				"[ ] (C)",
+				"[ ] (C)",
+				"[ ] (C)"
+			});
+			
+//			foreach (var task in tasks) {
+//				lines.Add("[ ] " + task.Trim());
+//			}
 			lines.AddRange(new [] { "---", "", "## Исполнение плана: {plan}", "## {productivity}", "" });
 			lines.AddRange(weather);
 			lines.AddRange(new [] {
-				"# Триста букв:", "", "",
 				"# События и результаты:", "", "",
 				"# Хронодекс:", ""
 			});
@@ -193,6 +214,12 @@ namespace DailyReviewCLI.Utils {
 					getImageFileResource(curDate), "</data><mime>image/png</mime><width>1200</width><height>1000</height></resource>"
 				});
 			}
+			foreach (var resource in imageResources) {
+				lines.AddRange(new [] {
+					"<resource><data encoding=\"base64\">",
+					resource, "</data><mime>image/png</mime><width>50</width><height>50</height></resource>"
+				});
+			}
 			
 			lines.Add("</note></en-export>");
 
@@ -208,12 +235,24 @@ namespace DailyReviewCLI.Utils {
 				}
 			}
         }
+		
+		private string getImageLinkMediaHash(string sUrl) {
+			using (var md5 = MD5.Create()) {
+				var resource = WebServices.getResourceByUrl(sUrl);
+				using (var stream = new MemoryStream(resource)) {
+					byte[] b = md5.ComputeHash(stream);
+					stream.Close();
+					imageResources.Add(Convert.ToBase64String(resource));
+					return BitConverter.ToString(b).Replace("-", "").ToLower();
+				}
+			}			
+		}
 
 		private string getImageFileResource(string curDate) {
             byte[] file = File.ReadAllBytes(_markdownFolder.FullName + @"\" + curDate + ".png");
             return Convert.ToBase64String(file);
         }
-
+		
 		private string getTimeStampFor(string curDate) {
 			return curDate.Replace("-", "") + "T185959Z";
 		}
@@ -262,7 +301,9 @@ namespace DailyReviewCLI.Utils {
                     htmlLines.Add("<hr/>");
                 } else if (mdLine.StartsWith("% ", StringComparison.CurrentCulture)) {
 					// do nothing
-             	} else {
+				} else if (mdLine.StartsWith("{", StringComparison.CurrentCulture)) {
+					htmlLines.Add("<en-media hash=\"" + getImageLinkMediaHash(mdLine.Replace("{", "").Replace("}","")) + "\" style=\"cursor: default; height: auto;\" type=\"image/png\"/>");
+				} else {
 					htmlLines.Add(String.Format("<div>{0}</div>", mdLine));
 				}
 			}
