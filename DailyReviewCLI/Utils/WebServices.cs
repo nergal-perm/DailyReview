@@ -87,6 +87,22 @@ namespace DailyReviewCLI.Utils {
 			
 		}
 		
+		public static string getGoogleDocData(string cellAddress) {
+			var sb = new StringBuilder();
+			sb.Append(ConfigurationManager.AppSettings.Get("GoogleDoc"));
+			sb.Append("&single=true&output=csv&range=");
+			sb.Append(cellAddress);
+			
+			using (var webClient = new System.Net.WebClient()) {
+				webClient.Encoding = Encoding.UTF8;
+				string result = webClient.DownloadString(sb.ToString());
+				Console.WriteLine(result);
+				return result;
+			}
+			
+			
+		}
+		
 		
 		public static string[] getHistoryFor(string curDate) {
 			return new string[0] ;

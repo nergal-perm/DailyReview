@@ -156,6 +156,7 @@ namespace DailyReviewCLI.Utils {
 //			}
 			lines.AddRange(new [] { "---", "", "## Исполнение плана: {plan}", "## {productivity}", "" });
 			lines.AddRange(weather);
+			lines.AddRange(new [] { "# Вопрос дня:", WebServices.getGoogleDocData("a7"), "* ", "" });
 			lines.AddRange(new [] {
 				"# События и результаты:", "", "",
 				"# Хронодекс:", ""
