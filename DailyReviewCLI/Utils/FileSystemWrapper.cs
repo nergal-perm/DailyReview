@@ -16,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using Microsoft.Win32;
 
 namespace DailyReviewCLI.Utils {
@@ -271,7 +272,10 @@ namespace DailyReviewCLI.Utils {
 			bool isInList = false;
 
 			foreach (string iter in mdLines) {
-				string mdLine = iter.Replace("<", "&lt;").Replace(">", "&gt;");;
+				string mdLine = iter.Replace("<", "&lt;").Replace(">", "&gt;");
+				if (mdLine.Contains("](")) {
+					mdLine = replaceHyperLink(mdLine);
+				}
 				if (isInList && !mdLine.StartsWith("* ", StringComparison.CurrentCulture)) {
 					isInList = false;
 					htmlLines.Add("</ul>");
@@ -288,7 +292,7 @@ namespace DailyReviewCLI.Utils {
 					                            mdLine.Replace("## ", "")
 					                            .Replace("{plan}", string.Format("{0,3:P2}", getPlanPercentage()))
 					                            .Replace("{productivity}", productivityData)));
-				} else if (mdLine.StartsWith("[", StringComparison.CurrentCulture)) {
+				} else if (mdLine.StartsWith("[x]", StringComparison.CurrentCulture) || mdLine.StartsWith("[ ]", StringComparison.CurrentCulture)) {
 					htmlLines.Add(getColoredTaskString(mdLine));
 					updatePlanPercentage(mdLine);
 				} else if (mdLine.StartsWith("* ", StringComparison.CurrentCulture)) {
@@ -370,11 +374,19 @@ namespace DailyReviewCLI.Utils {
 		}
 
 		private string replaceHyperLink(string line) {
-			string[] linkParts = line.Split(new [] { "](" }, StringSplitOptions.RemoveEmptyEntries);
-
-			return String.Format("<a href=\"{0}\" style=\"color: rgb(105, 170, 53);\">{1}</a>",
-				linkParts[1].Split(")"[0])[0],
-				linkParts[0].Split("["[0])[linkParts[0].Split("["[0]).Length - 1]);
+			var rx = new Regex(@"\[(.*?)\]\((.*?)\)");
+			var matches = rx.Matches(line)[0].Groups;
+			var link = matches[1].Value;
+			System.Console.WriteLine("Link: " + link);			
+			var text = matches[2].Value;
+			System.Console.WriteLine("Text: " + text);
+			var linkParts = link.Split(@"/".ToCharArray()); 
+			if (linkParts[2] == "www.evernote.com") {
+				link = @"evernote:///view/" + linkParts[6] + @"/" + linkParts[4] + @"/" + linkParts[7] + @"/" + linkParts[7];
+			}
+			string result = rx.Replace(line, "<a href=\"${1}\" style=\"color: rgb(105, 170, 53);\">" + link + "</a>");
+			Console.WriteLine(result);
+			return result;
 		}
 
 		private DateTime getDateFromString(string curDate) {
