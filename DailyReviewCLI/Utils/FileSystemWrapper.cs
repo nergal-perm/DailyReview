@@ -375,17 +375,20 @@ namespace DailyReviewCLI.Utils {
 		}
 
 		private string replaceHyperLink(string line) {
-			var rx = new Regex(@"\[(.*?)\]\((.*?)\)");
-			var matches = rx.Matches(line)[0].Groups;
-			var link = matches[1].Value;
-			System.Console.WriteLine("Link: " + link);			
-			var text = matches[2].Value;
-			System.Console.WriteLine("Text: " + text);
-			var linkParts = link.Split(@"/".ToCharArray()); 
-			if (linkParts[2] == "www.evernote.com") {
-				link = @"evernote:///view/" + linkParts[6] + @"/" + linkParts[4] + @"/" + linkParts[7] + @"/" + linkParts[7];
+			var rx = new Regex(@"\[([^\[]*?)\]\(([^\(]*?)\)");
+			var matches = rx.Matches(line);
+			string result = line;
+			foreach (Match m in matches) {
+				var groups = m.Groups;
+				var link = groups[1].Value;
+				var newLink = link;
+				var text = groups[2].Value;
+				var linkParts = link.Split(@"/".ToCharArray()); 
+				if (linkParts[2] == "www.evernote.com") {
+					newLink = @"evernote:///view/" + linkParts[6] + @"/" + linkParts[4] + @"/" + linkParts[7] + @"/" + linkParts[7];
+				}
+				result = result.Replace("[" + link + "](" + text + ")", "<a href=\"" + link + "\" style=\"color: rgb(105, 170, 53);\">" + text + "</a>");
 			}
-			string result = rx.Replace(line, "<a href=\"${1}\" style=\"color: rgb(105, 170, 53);\">" + link + "</a>");
 			Console.WriteLine(result);
 			return result;
 		}
