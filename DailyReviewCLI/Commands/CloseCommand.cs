@@ -38,9 +38,9 @@ namespace DailyReviewCLI.Commands {
 				_fsw.SaveImage(chrImage, _context["date"]);	
 			}
 			
-			_fsw.WriteToHtml(_context["date"]);
-			_fsw.moveFilesForZim(_context["date"]);
-            _fsw.cleanUpFiles(_context["date"]);
+			//_fsw.WriteToHtml(_context["date"]);
+			//_fsw.moveFilesForZim(_context["date"]);
+            //_fsw.cleanUpFiles(_context["date"]);
             
         }
 
