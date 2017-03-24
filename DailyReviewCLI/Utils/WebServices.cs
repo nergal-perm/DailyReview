@@ -28,6 +28,7 @@ namespace DailyReviewCLI.Utils {
 			sb.Append("/forecast/lang:RU/q/uspp.xml");
 				
 			var result = new List<string>();
+			
 			using (var webClient = new System.Net.WebClient()) {
 				webClient.Encoding = Encoding.UTF8;
 				XmlDocument xDoc = new XmlDocument();
@@ -35,13 +36,19 @@ namespace DailyReviewCLI.Utils {
 				
 				result.Add(String.Format("# Прогноз погоды ({0})", xDoc.SelectSingleNode("//forecast/txt_forecast/date").InnerText));
 				var xArray = xDoc.SelectNodes("//forecast/txt_forecast/forecastdays/forecastday");
+				result.Add("|  | Иконка |Прогноз |");
+				result.Add("|-|-|-|");
+				int i = 0;
+				var lines = new string[4];	
 				foreach (XmlNode xNode in xArray) {
 					if (int.Parse(xNode.SelectSingleNode("period").InnerText) <= 1) {
-						string line = String.Format("{0}: {1}", xNode.SelectSingleNode("title").InnerText, xNode.SelectSingleNode("fcttext_metric").InnerText); 
-						result.Add("{" +xNode.SelectSingleNode("icon_url").InnerText + "}");
-						result.Add(line);
+						lines[i] = "![](" + xNode.SelectSingleNode("icon_url").InnerText + ")";
+						lines[++i] = xNode.SelectSingleNode("fcttext_metric").InnerText;
+						i++;
 					}
 				}
+				result.Add("| День | " + lines[0] + " | " + lines[1] + " |");
+				result.Add("| Ночь | " + lines[2] + " | " + lines[3] + " |");
 				result.Add("");
 			}
 			return result.ToArray();

@@ -140,21 +140,17 @@ namespace DailyReviewCLI.Utils {
 			});
 			lines.AddRange(new [] {
 				"# План на день:",
-				"[ ] (A)",
-				"[ ] (B)",
-				"[ ] (B)",
-				"[ ] (B)",
-				"[ ] (C)",
-				"[ ] (C)",
-				"[ ] (C)",
-				"[ ] (C)",
-				"[ ] (C)"
+				"* <span style='color:#E30000'>Задача 1</span>",
+				"* <span style='color:#2D4FC9'>Задача 2</span>",
+				"* <span style='color:#41AD1C'>Задача 3</span>",
+				"* <span style='color:#797979'>Задача 4</span>",
+				""
 			});
 			
 //			foreach (var task in tasks) {
 //				lines.Add("[ ] " + task.Trim());
 //			}
-			lines.AddRange(new [] { "---", "", "## Исполнение плана: {plan}", "## {productivity}", "" });
+			//lines.AddRange(new [] { "", "# Продуктивность", "Исполнение плана: {plan}", "{productivity}", "" });
 			lines.AddRange(weather);
 			lines.AddRange(new [] { "# Вопрос дня:", WebServices.getGoogleDocData("a7"), "* ", "" });
 			lines.AddRange(new [] {
